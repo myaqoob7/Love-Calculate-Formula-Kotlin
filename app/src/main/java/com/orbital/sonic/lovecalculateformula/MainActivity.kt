@@ -2,8 +2,10 @@ package com.orbital.sonic.lovecalculateformula
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputLayout
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,20 +14,32 @@ class MainActivity : AppCompatActivity() {
     var lovePercentage = 0
     var recursionList: ArrayList<Int>? = null
 
-    private lateinit var tvLoveCalculate: TextView
+    private lateinit var tvLoveResult: TextView
+    private lateinit var yourName: TextInputLayout
+    private lateinit var loveName:TextInputLayout
+    private lateinit var btnLoveCalculate:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        tvLoveCalculate = findViewById(R.id.tvLoveCalculate)
+        tvLoveResult = findViewById(R.id.tvLoveResult)
+        yourName = findViewById(R.id.your_name_input_layout)
+        loveName = findViewById(R.id.love_name_input_layout)
+        btnLoveCalculate = findViewById(R.id.btnLoveCalculate)
 
-        //Ali Loves Alia
-        val name = "AliLovesAlia"
-        loveCalculating(getOccurringChar(name.toLowerCase()))
-        Log.i("LovePercentage", "LovePercentage= $lovePercentage")
 
-        tvLoveCalculate.text = "$lovePercentage%"
+        btnLoveCalculate.setOnClickListener {
+            if (validateText()){
+                val textYName: String =
+                    yourName.editText?.text.toString()
+                val textLName: String =
+                    loveName.editText?.text.toString()
+
+                loveCalculating(getOccurringChar("$textYName loves $textLName".lowercase(Locale.getDefault())))
+                tvLoveResult.text = "$lovePercentage%"
+            }
+        }
 
     }
 
@@ -95,5 +109,29 @@ class MainActivity : AppCompatActivity() {
             Log.i("recursionNumber", "Number: " + number % 10)
         }
         return recursionList!!
+    }
+
+    private fun validateText(): Boolean {
+        val textYName: String =
+            yourName.editText?.text.toString()
+        val textLName: String =
+            loveName.editText?.text.toString()
+
+
+        if (textYName.isEmpty()) {
+            yourName.error = "Field can't be empty"
+
+        } else {
+            yourName.error = null
+        }
+
+        if (textLName.isEmpty()) {
+            loveName.error = "Field can't be empty"
+        } else {
+            loveName.error = null
+        }
+
+
+        return !(textYName.isEmpty() || textLName.isEmpty())
     }
 }
